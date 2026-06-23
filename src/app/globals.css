@@ -1,26 +1,240 @@
-@import "tailwindcss";
+﻿/* --- Font Import via next/font (handled in layout.tsx) ---- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* --- CSS Custom Properties ------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core Colors */
+  --color-void:     #0A0A0A;
+  --color-surface:  #141414;
+  --color-elevated: #1E1E1E;
+  --color-border:   #2A2A2A;
+
+  /* Accents */
+  --color-ember:    #E8612A;
+  --color-amber:    #F2A93B;
+  --color-glow:     #FF6B35;
+
+  /* Text */
+  --color-primary:  #F5F0E8;
+  --color-muted:    #8A8480;
+  --color-dim:      #4A4540;
+
+  /* Category Colors */
+  --cat-fastfood:   #E8612A;
+  --cat-cold:       #3BA8C4;
+  --cat-hot:        #C4703B;
+  --cat-juice:      #5CB85C;
+  --cat-breakfast:  #C4A83B;
+  --cat-main:       #C43B3B;
+
+  /* Springs (referenced in JS) */
+  --spring-snappy:  "stiffness: 300, damping: 25, mass: 0.5";
+  --spring-gentle:  "stiffness: 120, damping: 20, mass: 0.8";
+
+  /* Layout */
+  --header-height:  72px;
+  --filter-height:  64px;
+  --modal-radius:   24px;
+  --card-radius:    16px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* --- Base Reset ------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-void);
+  color: var(--color-primary);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* --- Selection Color -------------------------------------- */
+::selection {
+  background-color: rgba(232, 97, 42, 0.3);
+  color: var(--color-primary);
+}
+
+/* --- Scrollbar -------------------------------------------- */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-ember);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-glow);
+}
+
+/* --- Focus Styles ----------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* --- Component Layer -------------------------------------- */
+@layer components {
+
+  /* Card Base */
+  .card-base {
+    @apply bg-elevated border border-border rounded-2xl overflow-hidden;
+    @apply shadow-card transition-shadow duration-300;
+    background-image: var(--tw-bg-card-shine, none);
+  }
+
+  .card-base:hover {
+    @apply shadow-card-hover border-ember/20;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-ember {
+    background: rgba(232, 97, 42, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(232, 97, 42, 0.2);
+  }
+
+  /* Shimmer Effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0)    0%,
+      rgba(255, 255, 255, 0.04) 40%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.04) 60%,
+      rgba(255, 255, 255, 0)    100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Text Gradient */
+  .text-gradient-ember {
+    background: linear-gradient(135deg, var(--color-ember), var(--color-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Grain Overlay */
+  .grain-overlay::after {
+    content: "";
+    position: fixed;
+    inset: -200%;
+    width: 400%;
+    height: 400%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px 128px;
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 999;
+    animation: grain 0.8s steps(1) infinite;
+  }
+
+  /* Price Badge */
+  .price-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-body font-semibold;
+    background: rgba(232, 97, 42, 0.12);
+    border: 1px solid rgba(232, 97, 42, 0.3);
+    color: var(--color-amber);
+  }
+
+  /* Category Pill */
+  .category-pill {
+    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-body font-medium;
+    @apply transition-all duration-200 cursor-pointer select-none;
+    border: 1px solid var(--color-border);
+    color: var(--color-muted);
+  }
+
+  .category-pill.active {
+    border-color: var(--color-ember);
+    color: var(--color-primary);
+    background: rgba(232, 97, 42, 0.1);
+  }
+
+  /* AR Button */
+  .ar-button {
+    @apply relative overflow-hidden flex items-center justify-center gap-3;
+    @apply w-full py-4 rounded-2xl font-body font-semibold text-base;
+    @apply transition-all duration-300 cursor-pointer select-none;
+    background: linear-gradient(135deg, var(--color-ember), var(--color-amber));
+    color: white;
+    box-shadow: 0 0 24px rgba(232, 97, 42, 0.4);
+  }
+
+  .ar-button:hover {
+    box-shadow: 0 0 40px rgba(232, 97, 42, 0.6);
+    transform: translateY(-1px);
+  }
+
+  .ar-button:active {
+    transform: translateY(0px);
+    box-shadow: 0 0 16px rgba(232, 97, 42, 0.3);
+  }
+}
+
+/* --- Utility Layer ---------------------------------------- */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .perspective-1000 { perspective: 1000px; }
+  .preserve-3d      { transform-style: preserve-3d; }
+  .backface-hidden  { backface-visibility: hidden; }
+
+  .will-change-transform { will-change: transform; }
+  .will-change-opacity   { will-change: opacity; }
+
+  .text-balance { text-wrap: balance; }
+
+  .grid-bg {
+    background-image: var(--tw-bg-grid-lines);
+    background-size: 40px 40px;
+  }
+}
+
+/* --- Reduced Motion --------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
