@@ -226,6 +226,14 @@ body {
     background-image: var(--tw-bg-grid-lines);
     background-size: 40px 40px;
   }
+  .left-1\/6 {
+    left: 16.666667%;
+  }
+   /* Modal-specific */
+  .py-4\.5 {
+    padding-top: 1.125rem;
+    padding-bottom: 1.125rem;
+  }
 }
 
 /* --- Reduced Motion --------------------------------------- */
@@ -237,4 +245,54 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ─── Print Styles ───────────────────────────────────── */
+@media print {
+  .grain-overlay,
+  .glass,
+  .glass-ember {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .card-base {
+    break-inside: avoid;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ─── High Contrast Mode ─────────────────────────────── */
+@media (forced-colors: active) {
+  .card-base,
+  .glass,
+  .glass-ember {
+    border: 2px solid CanvasText !important;
+  }
+
+  .price-badge,
+  .category-pill {
+    border: 1px solid CanvasText !important;
+  }
+}
+
+/* ─── Touch Action (prevent zoom on double tap) ──────── */
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* ─── Safe Area Padding (notched phones) ─────────────── */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
 }

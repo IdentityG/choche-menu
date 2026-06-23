@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SplashScreen from "@/components/splash/SplashScreen";
 import { springs } from "@/lib/motion";
@@ -9,24 +9,52 @@ interface SplashWrapperProps {
   children: React.ReactNode;
 }
 
+const SPLASH_SESSION_KEY = "choche-splash-seen";
+
 export default function SplashWrapper({ children }: SplashWrapperProps) {
   const [showSplash, setShowSplash] = useState(true);
   const [showContent, setShowContent] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+
+  /* ── Check if splash was already seen this session ── */
+  useEffect(() => {
+    try {
+      const hasSeen = sessionStorage.getItem(SPLASH_SESSION_KEY);
+      if (hasSeen === "true") {
+        setShowSplash(false);
+        setShowContent(true);
+      }
+    } catch {
+      // sessionStorage unavailable (private browsing etc)
+    }
+    setIsChecking(false);
+  }, []);
 
   const handleSplashComplete = useCallback(() => {
     setShowSplash(false);
-    // Small delay to let splash fully exit before content enters
+    try {
+      sessionStorage.setItem(SPLASH_SESSION_KEY, "true");
+    } catch {
+      // Silently fail
+    }
     setTimeout(() => setShowContent(true), 50);
   }, []);
 
+  // Don't render anything until session check completes
+  if (isChecking) {
+    return (
+      <div className="min-h-screen bg-void" />
+    );
+  }
+
   return (
     <>
-      {/* -- Splash Layer ------------------------------- */}
+      {/* ── Splash Layer ─────────────────────────────── */}
       {showSplash && (
         <SplashScreen onComplete={handleSplashComplete} />
       )}
 
-      {/* -- Main Content Layer ------------------------- */}
+      {/* ── Main Content Layer ───────────────────────── */}
       <AnimatePresence>
         {showContent && (
           <motion.div

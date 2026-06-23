@@ -151,3 +151,38 @@ export const pillVariants: Variants = {
     transition: springs.bouncy,
   },
 };
+
+/* ─── Bottom Sheet Drag ─────────────────────────────────── */
+export const bottomSheetConfig = {
+  drag: {
+    bounceStiffness: 300,
+    bounceDamping: 25,
+    power: 0.3,
+    timeConstant: 200,
+  },
+  dismiss: {
+    velocityThreshold: 500,
+    distanceThreshold: 100,
+  },
+};
+
+/* ─── Stagger for modal content ─────────────────────────── */
+export const modalContentStagger: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+export const modalContentItem: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: springs.gentle,
+  },
+};

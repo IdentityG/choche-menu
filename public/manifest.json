@@ -1,0 +1,27 @@
+{
+  "name": "Choche Takeaway — ጮጮ ኮፈ ሀዉስ",
+  "short_name": "Choche Menu",
+  "description": "Scan. Explore. Order. Experience our full menu with AR dish previews.",
+  "start_url": "/menu",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#E8612A",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["food", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
