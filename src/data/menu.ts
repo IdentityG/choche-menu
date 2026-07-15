@@ -3,7 +3,7 @@
 /* ─── Image Base URLs (Unsplash — replace with real photos later) ── */
 const IMG = {
   // Burgers
-  burgerSpecial:    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop&q=80",
+  burgerSpecial:    "/images/dishes/special-burger.jpeg",
   burgerNormal:     "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&h=400&fit=crop&q=80",
   burgerCheese:     "https://images.unsplash.com/photo-1608767221051-2b9d18f35a2f?w=600&h=400&fit=crop&q=80",
   burgerFalafel:    "https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=600&h=400&fit=crop&q=80",
@@ -21,7 +21,7 @@ const IMG = {
 
   // Wraps & Sandwiches
   wrapSpecial:      "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&h=400&fit=crop&q=80",
-  wrapNormal:       "https://images.unsplash.com/photo-1600850056064-a8b380df8395?w=600&h=400&fit=crop&q=80",
+  wrapNormal:       "/images/dishes/normal-rap.jpeg",
   irtib:            "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=400&fit=crop&q=80",
   chips:            "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&h=400&fit=crop&q=80",
   sandwichEgg:      "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&h=400&fit=crop&q=80",
@@ -53,7 +53,7 @@ const IMG = {
   coldMilk:         "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&h=400&fit=crop&q=80",
 
   // Breakfast
-  chechebsa:        "https://images.unsplash.com/photo-1567521464027-f127ff144326?w=600&h=400&fit=crop&q=80",
+  chechebsa:        "/images/dishes/normal-cacabsa.jpeg",
   fatira:           "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&h=400&fit=crop&q=80",
   eggSauce:         "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&h=400&fit=crop&q=80",
   eggFirfir:        "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&h=400&fit=crop&q=80",
@@ -71,7 +71,7 @@ const IMG = {
   // Main Dishes
   fatiraSpecial:    "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&h=400&fit=crop&q=80",
   salad:            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop&q=80",
-  shiro:            "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&h=400&fit=crop&q=80",
+  shiro:            "/images/dishes/special-shiro.jpeg",
   pastaEgg:         "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&h=400&fit=crop&q=80",
   pastaVeggie:      "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&h=400&fit=crop&q=80",
   riceSauce:        "https://images.unsplash.com/photo-1536304929831-ee1ca9d44726?w=600&h=400&fit=crop&q=80",
