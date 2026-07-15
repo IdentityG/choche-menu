@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import StickyFilterBar from "@/components/menu/StickyFilterBar";
-import MenuGrid from "@/components/menu/MenuGrid";
-import { useMenuFilter, type EnrichedMenuItem } from "@/hooks/useMenuFilter";
+import CategoryCard from "@/components/menu/CategoryCard";
+import { RESTAURANT_DATA } from "@/data/menu";
+import type { EnrichedMenuItem } from "@/hooks/useMenuFilter";
 
 /* ─── Props ────────────────────────────────────────────── */
 interface MenuSectionProps {
@@ -11,14 +11,23 @@ interface MenuSectionProps {
 }
 
 export default function MenuSection({ onItemClick }: MenuSectionProps) {
-  const {
-    activeFilter,
-    setActiveFilter,
-    sortOption,
-    setSortOption,
-    filteredItems,
-    itemCount,
-  } = useMenuFilter();
+  // Group items by category
+  const categorizedItems = RESTAURANT_DATA.categories.map((cat) => ({
+    category: {
+      id: cat.id,
+      name: cat.category,
+      icon: cat.icon,
+      colorHex: cat.colorHex,
+    },
+    items: cat.items.map((item) => ({
+      ...item,
+      categoryId: cat.id,
+      categoryName: cat.category,
+      categoryIcon: cat.icon,
+      categoryColor: cat.color,
+      categoryColorHex: cat.colorHex,
+    })) as EnrichedMenuItem[],
+  }));
 
   return (
     <section
@@ -58,34 +67,21 @@ export default function MenuSection({ onItemClick }: MenuSectionProps) {
             What would you like?
           </h2>
           <p className="text-muted text-sm font-body max-w-sm mx-auto">
-            Browse our full selection of dishes, drinks, and breakfast items.
-            Tap any item to view details and see it in AR.
+            Browse our selection organized by category. Tap any category to expand and view all items.
           </p>
         </motion.div>
 
-        {/* ── Sticky Filter Bar ───────────────────── */}
-        <StickyFilterBar
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          sortValue={sortOption}
-          onSortChange={setSortOption}
-          itemCount={itemCount}
-        />
-
-        {/* ── Divider ─────────────────────────────── */}
-        <div className="px-4 py-4">
-          <div
-            className="w-full h-px"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, var(--color-border), transparent)",
-            }}
-          />
-        </div>
-
-        {/* ── Menu Grid ───────────────────────────── */}
-        <div className="px-4">
-          <MenuGrid items={filteredItems} onItemClick={onItemClick} />
+        {/* ── Category Cards ──────────────────────── */}
+        <div className="px-4 space-y-4">
+          {categorizedItems.map((cat, index) => (
+            <CategoryCard
+              key={cat.category.id}
+              category={cat.category}
+              items={cat.items}
+              index={index}
+              onItemClick={onItemClick}
+            />
+          ))}
         </div>
       </div>
     </section>

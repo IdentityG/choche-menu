@@ -223,18 +223,14 @@ function FeaturedCard({
 
             <div className="flex items-center justify-between">
               <PriceTag price={item.price} size="lg" />
-              <motion.div
+              <motion.span
                 className="flex items-center gap-2 px-3 py-2 rounded-xl
                            bg-ember/8 border border-ember/15
                            text-xs font-body text-ember font-medium
                            group-hover:bg-ember/15 transition-colors duration-200"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                transition={springs.snappy}
               >
-                <Eye className="w-3.5 h-3.5" strokeWidth={2} />
-                View in AR
-              </motion.div>
+                View Details
+              </motion.span>
             </div>
           </div>
         </div>
@@ -332,10 +328,9 @@ function StandardCard({
           {/* Bottom */}
           <div className="flex items-center justify-between mt-auto">
             <PriceTag price={item.price} size="md" />
-            <motion.span className="flex items-center gap-1 text-xs text-dim font-body
+            <motion.span className="text-xs text-dim font-body
                                     group-hover:text-ember transition-colors duration-200">
-              <Eye className="w-3 h-3" strokeWidth={2} />
-              <span className="hidden sm:inline">Details</span>
+              Details
             </motion.span>
           </div>
         </div>

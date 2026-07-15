@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback } from "react";
 import {
   motion,
   AnimatePresence,
@@ -13,19 +13,15 @@ import {
 import {
   X,
   Phone,
-  Eye,
   Sparkles,
   Tag,
   ChefHat,
   CheckCircle2,
-  Smartphone,
-  Box,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { springs } from "@/lib/motion";
 import { RESTAURANT_DATA } from "@/data/menu";
 import type { EnrichedMenuItem } from "@/hooks/useMenuFilter";
-import ARViewer from "@/components/ar/ARViewer";
 
 /* ─── Props ────────────────────────────────────────────── */
 interface DishModalProps {
@@ -110,12 +106,9 @@ export default function DishModal({
   const panelOpacity = useTransform(dragY, [0, 300], [1, 0.5]);
   const overlayOpacityFromDrag = useTransform(dragY, [0, 300], [1, 0]);
 
-  // AR Viewer state
-  const [isAROpen, setIsAROpen] = useState(false);
-
   /* ── Lock body scroll ──────────────────────────── */
   useEffect(() => {
-    if (isOpen && !isAROpen) {
+    if (isOpen) {
       const scrollY = window.scrollY;
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
@@ -130,22 +123,18 @@ export default function DishModal({
         window.scrollTo(0, scrollY);
       };
     }
-  }, [isOpen, isAROpen]);
+  }, [isOpen]);
 
   /* ── ESC key handler ───────────────────────────── */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (isAROpen) {
-          setIsAROpen(false);
-        } else if (isOpen) {
-          onClose();
-        }
+      if (e.key === "Escape" && isOpen) {
+        onClose();
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [isOpen, isAROpen, onClose]);
+  }, [isOpen, onClose]);
 
   /* ── Drag to dismiss ───────────────────────────── */
   const handleDragEnd = useCallback(
@@ -159,25 +148,15 @@ export default function DishModal({
     [onClose, animate, scope]
   );
 
-  /* ── AR handler ────────────────────────────────── */
-  const handleARView = useCallback(() => {
-    setIsAROpen(true);
-  }, []);
-
-  const handleARClose = useCallback(() => {
-    setIsAROpen(false);
-  }, []);
-
   if (!item) return null;
 
   return (
-    <>
-      <AnimatePresence mode="wait">
-        {isOpen && !isAROpen && (
-          <div className="fixed inset-0 z-modal" role="dialog" aria-modal="true">
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <div className="fixed inset-0 z-modal" role="dialog" aria-modal="true">
             {/* ── Backdrop ──────────────────────────── */}
             <motion.div
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+              className="absolute inset-0 bg-black/80 backdrop-blur-lg"
               variants={overlayVariants}
               initial="hidden"
               animate="visible"
@@ -192,8 +171,8 @@ export default function DishModal({
               className={cn(
                 "absolute bottom-0 left-0 right-0",
                 "max-h-[92vh] overflow-y-auto no-scrollbar",
-                "bg-surface rounded-t-3xl",
-                "border-t border-x border-white/[0.06]",
+                "bg-void rounded-t-3xl",
+                "border-t border-x border-white/[0.08]",
                 "shadow-modal"
               )}
               variants={panelVariants}
@@ -209,7 +188,7 @@ export default function DishModal({
             >
               {/* ── Drag Handle ─────────────────────── */}
               <div
-                className="sticky top-0 z-30 pt-3 pb-2 flex justify-center cursor-grab active:cursor-grabbing bg-surface rounded-t-3xl"
+                className="sticky top-0 z-30 pt-3 pb-2 flex justify-center cursor-grab active:cursor-grabbing bg-void rounded-t-3xl"
                 onPointerDown={(e) => dragControls.start(e)}
               >
                 <div className="w-10 h-1 rounded-full bg-border" />
@@ -242,7 +221,7 @@ export default function DishModal({
               >
                 {/* === Image / Preview Area === */}
                 <motion.div variants={contentItem} className="mb-6">
-                  <DishPreviewArea item={item} onARClick={handleARView} />
+                  <DishPreviewArea item={item} />
                 </motion.div>
 
                 {/* === Name Section === */}
@@ -294,11 +273,6 @@ export default function DishModal({
                   }}
                 />
 
-                {/* === AR Button === */}
-                <motion.div variants={contentItem} className="mb-4">
-                  <ARButtonPrimary item={item} onClick={handleARView} />
-                </motion.div>
-
                 {/* === Call to Order === */}
                 <motion.div variants={contentItem}>
                   <CallToOrderButton phone={RESTAURANT_DATA.phone} />
@@ -308,32 +282,17 @@ export default function DishModal({
           </div>
         )}
       </AnimatePresence>
-
-      {/* ── AR Viewer (layered above modal) ──────── */}
-      {item && (
-        <ARViewer
-          item={item}
-          isOpen={isAROpen}
-          onClose={handleARClose}
-        />
-      )}
-    </>
   );
 }
 
 /* ═════════════════════════════════════════════════════════
    DISH PREVIEW AREA
    ═════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════
-   DISH PREVIEW AREA — Now with real image
-   ═════════════════════════════════════════════════════════ */
 
 function DishPreviewArea({
   item,
-  onARClick,
 }: {
   item: EnrichedMenuItem;
-  onARClick: () => void;
 }) {
   return (
     <div className="relative w-full h-56 sm:h-72 rounded-2xl overflow-hidden">
@@ -419,24 +378,6 @@ function DishPreviewArea({
           </motion.span>
         </div>
       )}
-
-      {/* 3D Preview button */}
-      <motion.button
-        onClick={(e) => {
-          e.stopPropagation();
-          onARClick();
-        }}
-        className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 cursor-pointer
-                   focus:outline-none focus-visible:ring-2 focus-visible:ring-ember rounded-xl"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.97 }}
-        transition={springs.snappy}
-      >
-        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-body font-medium glass-ember">
-          <Eye className="w-3.5 h-3.5" strokeWidth={2} />
-          View 3D Preview
-        </span>
-      </motion.button>
     </div>
   );
 }
@@ -500,80 +441,6 @@ function DetailGrid({ item }: { item: EnrichedMenuItem }) {
         </motion.div>
       ))}
     </div>
-  );
-}
-
-/* ═════════════════════════════════════════════════════════
-   AR BUTTON PRIMARY
-   ═════════════════════════════════════════════════════════ */
-function ARButtonPrimary({
-  item,
-  onClick,
-}: {
-  item: EnrichedMenuItem;
-  onClick: () => void;
-}) {
-  return (
-    <motion.button
-      onClick={onClick}
-      className={cn(
-        "relative w-full overflow-hidden",
-        "flex items-center justify-center gap-3",
-        "rounded-2xl",
-        "font-body font-semibold text-base text-white",
-        "cursor-pointer select-none",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
-      )}
-      style={{
-        background:
-          "linear-gradient(135deg, var(--color-ember), var(--color-amber))",
-        boxShadow: "0 0 30px rgba(232, 97, 42, 0.35)",
-        paddingTop: "18px",
-        paddingBottom: "18px",
-      }}
-      whileHover={{
-        scale: 1.02,
-        boxShadow: "0 0 50px rgba(232, 97, 42, 0.5)",
-      }}
-      whileTap={{
-        scale: 0.98,
-        boxShadow: "0 0 20px rgba(232, 97, 42, 0.25)",
-      }}
-      transition={springs.snappy}
-    >
-      {/* Shimmer sweep */}
-      <motion.div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.15) 55%, transparent 100%)",
-          backgroundSize: "200% 100%",
-        }}
-        animate={{
-          backgroundPosition: ["200% center", "-200% center"],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "linear",
-          repeatDelay: 2,
-        }}
-      />
-
-      {/* Pulse border */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl"
-        style={{ border: "1px solid rgba(255,255,255,0.2)" }}
-        animate={{ opacity: [0.3, 0.7, 0.3] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      <Eye className="w-5 h-5 relative z-10" strokeWidth={2} />
-      <span className="relative z-10">View in AR</span>
-      <span className="relative z-10 text-xs text-white/70 font-normal">
-        — 3D on your table
-      </span>
-    </motion.button>
   );
 }
 
